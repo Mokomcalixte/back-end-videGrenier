@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path'); // Importez le module path
 
-const signuoController = require('./controllers/signupController')
+const signupController = require('./controllers/signupController')
 
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -26,7 +26,9 @@ app.get('/', (req, res) => {
   res.send('<h1>Bienvenue sur notre page d\'accueil!</h1>');
 });
 
-app.post('/signup', signuoController.signup);
+app.post('/signup', signupController.signup);
+app.post('/login', signupController.login);
+
 
 
 
