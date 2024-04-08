@@ -3,9 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path'); // Importez le module path
-
 const signuoController = require('./controllers/signupController')
 const articleController=require('./controllers/articleController')
+const signupController = require('./controllers/signupController')
+
 
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -32,6 +33,8 @@ app.post('/article',articleController.insert);
 app.get('/article/list',articleController.ViewAllArticle);
 app.put('/article/update',articleController.UpdateArticle);
 app.delete('/article/deletion',articleController.deleteById);
+app.post('/signup', signupController.signup);
+app.post('/login', signupController.login);
 
 
 
