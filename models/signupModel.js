@@ -1,4 +1,4 @@
-//voici mon page signupModel, qu'est ce que je dois dois mettre dans le signuoController
+//voici mon page signupModel, qu'est ce que je dois dois mettre dans le signupController
 const User = require ('../schemas/user');
 
 

@@ -5,6 +5,7 @@ const cors = require('cors');
 const path = require('path'); // Importez le module path
 
 const signuoController = require('./controllers/signupController')
+const articleController=require('./controllers/articleController')
 
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -27,6 +28,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/signup', signuoController.signup);
+app.post('/article',articleController.insert);
+app.get('/article/list',articleController.ViewAllArticle);
+app.put('/article/update',articleController.UpdateArticle);
+app.delete('/article/deletion',articleController.deleteById);
 
 
 

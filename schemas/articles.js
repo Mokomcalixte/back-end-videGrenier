@@ -3,14 +3,18 @@ const mongoose = require ('mongoose')
 const { Schema } = mongoose;
 const articlesSchema = new Schema({
 
-    image: {
-        type: String, // Stocke l'image en tant que données binaires
-      },
+   
+      id:{
+        type: mongoose.Types.ObjectId, ref: "User"
+        },
     name:{
         type: String,
         required : [true, 'Le tire est obligatoire'],
 
     },
+     image: {
+        type: String, // Stocke l'image en tant que données binaires
+      },
     description:{
         type: String,
         required : [true, "L'auteur est obligatoire"],
