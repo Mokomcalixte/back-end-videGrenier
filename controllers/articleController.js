@@ -1,51 +1,92 @@
-const articleModel=require('../models/articleModel')
+const articleModel = require ('../models/articleModel');
 
-const insert= async (req,res)=>{
-const {name,description,price}=req.body;
-await articleModel.insertArticle({ name, description, price ,});
-
-
+const postArticles = async (req, res) => {
     try {
-        await articleModel.insertArticle({ name, description, price });
-        res.status(201).json({ message: 'a new article is added' });
-    } catch (error) {
-        res.status(500).json({message:'this article is not added'})
+        // Vérifie si req.file est défini et s'il a la propriété 'path'
+        if (!req.file || !req.file.path) {
+            throw new Error('No file uploaded');
+        }
+
+        // Si req.file est défini et a la propriété 'path', continuez le traitement
+        const newArticle = await articleModel.addArticle(req.body, req.file.path);
+        res.status(200).send({
+            message: 'Articles added successfully',
+            data: newArticle,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ error: 'Error while adding data', details: err.message });
     }
 };
-const ViewAllArticle=async(res,req)=>{
-    try {
-        const articles= await articleModel.find()
-        res.status(200).json(articles);
 
-    } catch (error) {
-    res.status(500).json({message:'articles are unavailable'})
+const getArticles = async (req, res) => {
+    try{
+        const articles = await articleModel.findAllArticles(req.body);
+        res.status(200).send({
+            message: 'Items successfully recovered',
+            data: articles,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ error: 'Error while retrieving items', details: err.message });
+    }
+    
+};
+const getArticleById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const article = await articleModel.getArticlesById(id);
+        res.status(200).json(article);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error while retrieving the article' });
+    }
+};
+
+const deleteArticles = async (req, res) => {
+    try {
+        const article = await articleModel.deleteArticleById(req.params.id);
+        if (!article) {
+            return res.status(404).send({ error: 'Item not found' });
+        }
+        res.status(200).send({
+            message: 'Item deleted sucessfully!',
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error while deleting the article', details: err.message });
     }
 }
-const deleteById=async(res,req)=>{
+const updateArticle = async (req, res) => {
+    const { id } = req.params;
+    const newData = req.body;
     try {
-        await articleModel.findByIdAndDelete(req.body.id);
-        res.status(200).json("Product has been deleted...");
+        let updatedArticle = await articleModel.updateArticle(id, newData);
 
-    } catch (error) {
-        res.status(500).json(error);
-    }
-}
+        if (!updatedArticle) {
+            return res.status(404).send({ error: 'Item not found' });
+        }
 
-//const UpdateArticle
-const UpdateArticle=async(res,req)=>{
-    try {
-        await articleModel.findByIdAndUpdate(
-                req.params.id,
-            { $set: req.body },
-            { new: true },
-        )
-        res.status(200).json(updatedArticle);
+        // Mettre à jour les champs de l'article avec les nouvelles données
+        Object.assign(updatedArticle, newData);
 
-    } catch (error) {
-        res.status(500).json(error);
-    }
-}
+        // Sauvegarder les modifications dans la base de données
+        updatedArticle = await updatedArticle.save();
 
-module.exports = { 
-    insert,ViewAllArticle,deleteById,UpdateArticle
+        res.status(200).send({
+            message: 'Item updated successfully',
+            data: updatedArticle,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error updating the item', details: err.message });
+    } 
+};
+
+module.exports = {
+    postArticles,
+    getArticles,
+    getArticleById,
+    deleteArticles,
+    updateArticle
 };

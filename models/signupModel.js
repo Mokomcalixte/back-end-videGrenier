@@ -1,5 +1,5 @@
-//voici mon page signupModel, qu'est ce que je dois dois mettre dans le signupController
-const User = require ('../schemas/user');
+//voici mon page signupModel, qu'est ce que je dois dois mettre dans le signuoController
+const User = require ('../schema/user');
 
 
 // Fonction pour créer un nouvel utilisateur

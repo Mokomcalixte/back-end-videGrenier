@@ -1,12 +1,12 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const path = require('path'); // Importez le module path
-const signuoController = require('./controllers/signupController')
-const articleController=require('./controllers/articleController')
-const signupController = require('./controllers/signupController')
+const path = require('path');
 
+const articleController = require ('./controllers/articleController');
+const userController = require('./controllers/userController');
+const signupController = require('./controllers/signupController');
+const jwtVerify = require('./middlewares/jwtVerify');
 
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -16,32 +16,35 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
   .catch((err) => console.log('Connexion à MongoDB échouée !', err));
 
 const app = express();
-
-// Configuration de bodyParser pour analyser les données JSON et les données de formulaire
 app.use(cors());
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Route GET pour la page d'accueil
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/'); 
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 app.get('/', (req, res) => {
-  res.send('<h1>Bienvenue sur notre page d\'accueil!</h1>');
+    res.send('<h1>Bienvenue sur notre page d\'accueil!</h1>');
 });
 
-app.post('/signup', signuoController.signup);
-app.post('/article',articleController.insert);
-app.get('/article/list',articleController.ViewAllArticle);
-app.put('/article/update',articleController.UpdateArticle);
-app.delete('/article/deletion',articleController.deleteById);
+app.post('/items', upload.single('image'), articleController.postArticles);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.get('/items', articleController.getArticles);
+app.get ('/items/:id', articleController.getArticleById);
+app.delete('/items/delete/:id', articleController.deleteArticles);
+app.put('/items/:id', articleController.updateArticle);
+app.post('/login', userController.login);
 app.post('/signup', signupController.signup);
-app.post('/login', signupController.login);
 
-
-
-
-// Démarrage du serveur
 app.listen(3005, () => {
-  console.log('Serveur démarré sur le port 3005');
-});
-
-
+    console.log('Serveur démarré sur le port 3005');
+  });

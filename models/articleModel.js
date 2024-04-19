@@ -1,13 +1,55 @@
-const Articles = require ('../schemas/articles')
+const Articles = require('../schema/articles');
+const Article = require ('../schema/articles');
 
-const insertArticle=async(req,res)=>{
-    try {
-        const newArticles =new Articles(articleData)
-        return newArticles.save();
+const addArticle = (articleData, imagePath) =>{
+    const newArticle = new Article({
+        ...articleData,
+        image: imagePath
+    })
+    return newArticle.save();
+};
 
-    } catch (error) {
-         throw new Error('Could not create the Article ');
+const findAllArticles = async () =>{
+    try{
+        return await Article.find();
+    } catch (err) {
+        console.log(err);
+        throw new Error ('Error while retrieving items')
     }
 };
 
-module.exports={insertArticle}
+const getArticlesById = async (id) => {
+    try{
+        return await Article.findById(id)
+    } catch (err) {
+        console.error(err);
+        throw new Error ('Error while retrieving items')
+    }
+};
+
+const deleteArticleById = async (id) => {
+    try{
+        return await Article.findByIdAndDelete(id);
+
+    } catch (err){
+        console.error(err);
+        throw new Error('Error while deleting the article');
+    }
+}
+
+const updateArticle = async (id, articleData) => {
+    try {
+        return await Article.findByIdAndUpdate(id, articleData, { new: true }); 
+    } catch (err) {
+        console.error(err);
+        throw new Error('Error updating the item');
+    }
+}; //voici mon model
+
+module.exports = {
+    addArticle,
+    findAllArticles,
+    getArticlesById,
+    deleteArticleById,
+    updateArticle
+}
