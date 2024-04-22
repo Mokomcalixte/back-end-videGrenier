@@ -3,21 +3,23 @@ const mongoose = require ('mongoose')
 const { Schema } = mongoose;
 const articlesSchema = new Schema({
 
+   
+     image: {
+        type: String, // Stocke l'image en tant que données binaires
+      },
+
     name:{
         type: String,
         required : [true, 'Le nom est obligatoire'],
 
     },
-     image: {
-        type: String, // Stocke l'image en tant que données binaires
-      },
     description:{
         type: String,
         required : [true, " La description est obligatoire"],
 
     },
     price: {
-        type: Number, 
+        type: String, 
         required: [true, 'Le prix est obligatoire'],
 
     },

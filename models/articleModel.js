@@ -1,3 +1,4 @@
+//articleModel.js
 const Articles = require('../schema/articles');
 const Article = require ('../schema/articles');
 

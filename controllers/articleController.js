@@ -1,3 +1,4 @@
+//articleController.js
 const articleModel = require ('../models/articleModel');
 
 const postArticles = async (req, res) => {
